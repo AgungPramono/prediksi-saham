@@ -1,4 +1,3 @@
-import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -11,24 +10,26 @@ from sklearn.model_selection import train_test_split
 
 def load_data(file_path):
     try:
-        data = pd.read_csv('saham_new.csv')  # Ganti dengan nama filemu
+        data = pd.read_csv('dataset/saham_new.csv')  # Ganti dengan nama filemu
         print("Data berhasil di load")
         return data
     except FileNotFoundError as e:
         print("File tidak ditemukan", e)
         return None
 
-def explore_data(data):
+def explore_data(data,name="Dataset"):
     # Mengatur pandas untuk menampilkan semua baris
     pd.set_option('display.max_rows', None)  # Menampilkan semua baris
     pd.set_option('display.max_columns', None)  # Menampilkan semua kolom (opsional)
     pd.set_option('display.width', None)  # Menyesuaikan lebar tampilan
 
     print(data.head())
+    print(f"\nInformasi {name}:")
     print(data.info())
-    print(data.isnull().sum())
-
+    print("\nStatistik Deskriptif:")
     print(data.describe())
+    print("\nPengecekan Missing Values:")
+    print(data.isnull().sum())
 
 def plot_correlation_matrix(data):
     numeric_data = data.select_dtypes(include=['float64', 'int64'])
@@ -182,17 +183,17 @@ def plot_grafik(result_df=None):
     fig.show()
 
 def main():
-    data = load_data('saham_new.csv')
+    data = load_data('dataset/saham_new.csv')
     if data is None:
         return
     else:
         explore_data(data)
-        plot_correlation_matrix(data)
         data_training, data_testing, y_test,y_train = split_data_training_testign(data)
         model = training_model(data_training, y_train)
         y_prediction, result_df = testing(data, data_testing, y_test, model)
         model_evaluation(y_test, y_prediction)
         plot_grafik(result_df)
+        plot_correlation_matrix(data)
 
 if __name__ == '__main__':
     main()
